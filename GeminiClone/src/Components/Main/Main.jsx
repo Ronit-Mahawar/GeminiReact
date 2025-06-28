@@ -32,18 +32,16 @@ const Main = () => {
   }
   
   const AskQuestion=async()=>{
+    setResultData("")
+    setLoading(true)
+    setShowResult(true)
     let response= await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key="+import.meta.env.VITE_GEMINI_API_KEY,
       {
         method:"POST",
         body:JSON.stringify(payload)
       }
     )
-    setResultData("")
-    setLoading(true)
-    setShowResult(true)
-
     
-     
     response=await response.json();
     setResultData(response.candidates[0].content.parts[0].text)
     console.log(resultData)
@@ -57,8 +55,9 @@ const Main = () => {
             <img src={assets.user_icon} alt="" />
         </div>
         <div className="main-container">
-          
-          <div className="greet">
+         {!showResult?
+         <>
+           <div className="greet">
             <p><span>Hello,Dev.</span></p>
             <p>How can I help you today?</p>
           </div>
@@ -81,6 +80,20 @@ const Main = () => {
             </div>
 
           </div>
+         </>:<div className='result'>
+          <div className="result-title">
+            <img src={assets.user_icon} alt="" />
+            <p>{recentPrompt}</p>
+          </div>
+          <div className="result-data">
+            <img src={assets.gemini_icon} alt="" />
+            <p dangerouslySetInnerHTML={{__html:resultData}}></p>
+          </div>
+         </div>
+         }
+          
+
+
           <div className="main-bottom">
             <div className="search-box">
               <input type="text"  placeholder='Enter a prompt' value={input} onChange={(event)=>{setInput(event.target.value)}} />
