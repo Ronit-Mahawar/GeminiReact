@@ -11,6 +11,12 @@ const Main = () => {
   const [loading,setLoading]=useState(false);
   const [resultData,setResultData]=useState("");  
 
+  const delayPara=(index,nextWord)=>{
+    setTimeout(function(){
+      setResultData(prev=>prev+nextWord)
+    },75*index)
+  }
+
   
 
    
@@ -33,6 +39,7 @@ const Main = () => {
   
   const AskQuestion=async()=>{
     setRecentPrompt(input)
+    setPreviousPrompt(prev=>[...prev,input])
     setResultData("")
     setLoading(true)
     setShowResult(true)
@@ -44,8 +51,27 @@ const Main = () => {
     )
 
     response=await response.json();
-    setResultData(response.candidates[0].content.parts[0].text)
-    console.log(resultData)
+    const result=response.candidates[0].content.parts[0].text;
+    
+    let responseArray=result.split("**");
+    let newArray="";
+    for(let i=0;i<responseArray.length;i++){
+      if(i===0 || i%2!==1){
+        newArray+=responseArray[i];
+      }else{
+        newArray+="<b>"+responseArray[i]+"</b>"
+      }
+    }
+    let newArray2=newArray.split("*").join("</br>")
+    let newResponsArray=newArray2.split(" ");
+    for(let i=0;i<newResponsArray.length;i++){
+      const nextWord=newResponsArray[i];
+      delayPara(i,nextWord+" ")
+
+    }
+    console.log(result)
+    console.log(responseArray)
+    setResultData(newArray2)
     setLoading(false)
     setInput("")
   }
