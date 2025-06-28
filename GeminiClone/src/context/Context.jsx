@@ -14,7 +14,11 @@ const ContextProvider = ({ children }) => {
     setTimeout(function(){
       setResultData(prev=>prev+nextWord)
     },75*index)
-    }
+  }
+  const newChat=()=>{
+    setLoading(false)
+    setShowResult(false)
+  }
   
   const AskQuestion=async(customPrompt = input)=>{
     
@@ -78,7 +82,8 @@ const ContextProvider = ({ children }) => {
     showResult,setShowResult,
     loading,setLoading,
     resultData,setResultData,
-    AskQuestion
+    AskQuestion,
+    newChat
     
     
 
