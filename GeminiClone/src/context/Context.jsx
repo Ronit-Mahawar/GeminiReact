@@ -1,3 +1,98 @@
+import { createContext, useState } from "react";
+
+export const Context = createContext();
+
+const ContextProvider = ({ children }) => {
+  const [prevPrompt, setPreviousPrompt] = useState([]);
+  const [input,setInput]=useState("");
+  const [recentPrompt,setRecentPrompt]=useState("");
+  const [showResult,setShowResult]=useState(false);
+  const [loading,setLoading]=useState(false);
+  const [resultData,setResultData]=useState(""); 
+
+  const delayPara=(index,nextWord)=>{
+    setTimeout(function(){
+      setResultData(prev=>prev+nextWord)
+    },75*index)
+    }
+  
+  const AskQuestion=async(customPrompt = input)=>{
+    
+    const payload={
+     
+    "contents": [
+      {
+        "parts": [
+          {
+            "text": customPrompt
+          }
+        ]
+      }
+    ]
+  
+  }
+    setRecentPrompt(customPrompt)
+    setPreviousPrompt(prev=>[...prev,customPrompt])
+    setResultData("")
+    setLoading(true)
+    setShowResult(true)
+    let response= await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key="+import.meta.env.VITE_GEMINI_API_KEY,
+      {
+        method:"POST",
+        body:JSON.stringify(payload)
+      }
+    )
+
+    response=await response.json();
+    const result=response.candidates[0].content.parts[0].text;
+    
+    let responseArray=result.split("**");
+    let newArray="";
+    for(let i=0;i<responseArray.length;i++){
+      if(i===0 || i%2!==1){
+        newArray+=responseArray[i];
+      }else{
+        newArray+="<b>"+responseArray[i]+"</b>"
+      }
+    }
+    console.log(newArray)
+    let newArray2=newArray.split("*").join("</br>")
+    let newResponsArray=newArray2.split(" ");
+    for(let i=0;i<newResponsArray.length;i++){
+      const nextWord=newResponsArray[i];
+      delayPara(i,nextWord+" ")
+
+    }
+    console.log(result)
+    console.log(responseArray)
+    setResultData(newArray2)
+    setLoading(false)
+    setInput("")
+  }
+
+  const contextValue = {
+    prevPrompt,
+    setPreviousPrompt,
+    input,setInput,
+    recentPrompt,setRecentPrompt,
+    showResult,setShowResult,
+    loading,setLoading,
+    resultData,setResultData,
+    AskQuestion
+    
+    
+
+  };
+
+  return (
+    <Context.Provider value={contextValue}>
+      {children}
+    </Context.Provider>
+  );
+};
+
+export default ContextProvider;
+
 // import { createContext } from "react";
 // import main from "../config/gemini";
 

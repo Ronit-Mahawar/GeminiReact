@@ -1,80 +1,25 @@
-import React, { useState } from 'react'
+import React, { useState,useContext } from 'react'
 import './Main.css'
 import { assets } from '../../assets/assets'
+import { Context } from '../../context/Context';
 
 const Main = () => {
-
-  const [input,setInput]=useState("");
-  const [recentPrompt,setRecentPrompt]=useState("");
-  const [prevPrompt,setPreviousPrompt]=useState([]);
-  const [showResult,setShowResult]=useState(false);
-  const [loading,setLoading]=useState(false);
-  const [resultData,setResultData]=useState("");  
-
-  const delayPara=(index,nextWord)=>{
-    setTimeout(function(){
-      setResultData(prev=>prev+nextWord)
-    },75*index)
-  }
+  const { prevPrompt,setPreviousPrompt } = useContext(Context);
+  const { input,setInput } = useContext(Context);
+  const { recentPrompt,setRecentPrompt } = useContext(Context);
+  const { showResult,setShowResult } = useContext(Context);
+  const { loading,setLoading } = useContext(Context);
+  const { resultData,setResultData } = useContext(Context);
+  const {AskQuestion}=useContext(Context);
 
   
 
-   
-  
+  // const delayPara=(index,nextWord)=>{
+  //   setTimeout(function(){
+  //     setResultData(prev=>prev+nextWord)
+  //   },75*index)
+  // }
 
-  
-  const payload={
-     
-    "contents": [
-      {
-        "parts": [
-          {
-            "text": input
-          }
-        ]
-      }
-    ]
-  
-  }
-  
-  const AskQuestion=async()=>{
-    setRecentPrompt(input)
-    setPreviousPrompt(prev=>[...prev,input])
-    setResultData("")
-    setLoading(true)
-    setShowResult(true)
-    let response= await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key="+import.meta.env.VITE_GEMINI_API_KEY,
-      {
-        method:"POST",
-        body:JSON.stringify(payload)
-      }
-    )
-
-    response=await response.json();
-    const result=response.candidates[0].content.parts[0].text;
-    
-    let responseArray=result.split("**");
-    let newArray="";
-    for(let i=0;i<responseArray.length;i++){
-      if(i===0 || i%2!==1){
-        newArray+=responseArray[i];
-      }else{
-        newArray+="<b>"+responseArray[i]+"</b>"
-      }
-    }
-    let newArray2=newArray.split("*").join("</br>")
-    let newResponsArray=newArray2.split(" ");
-    for(let i=0;i<newResponsArray.length;i++){
-      const nextWord=newResponsArray[i];
-      delayPara(i,nextWord+" ")
-
-    }
-    console.log(result)
-    console.log(responseArray)
-    setResultData(newArray2)
-    setLoading(false)
-    setInput("")
-  }
   return (
     <div className='main'>
         <div className="nav">
@@ -138,7 +83,7 @@ const Main = () => {
               <div>
                 <img src={assets.gallery_icon}  alt="" />
                 <img src={assets.mic_icon} alt="" />
-                <img src={assets.send_icon} onClick={AskQuestion} alt="" />
+                <img src={assets.send_icon} onClick={()=>AskQuestion()} alt="" />
               </div>
             </div>
             <p className="bottom-info">
