@@ -32,7 +32,7 @@ const Main = () => {
   }
   
   const AskQuestion=async()=>{
-    let response= await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=AIzaSyAQcWMgA5-YRe9Z8NKCsWx7FSrAGZDRJ4w",
+    let response= await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key="+import.meta.env.VITE_GEMINI_API_KEY,
       {
         method:"POST",
         body:JSON.stringify(payload)

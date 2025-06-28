@@ -10,7 +10,7 @@
 
 // async function main(prompt) {
 //   const ai = new GoogleGenAI({
-//     apiKey: 'AIzaSyAQcWMgA5-YRe9Z8NKCsWx7FSrAGZDRJ4w'
+//     apiKey: 
 //   });
 //   const config = {
 //     thinkingConfig: {
