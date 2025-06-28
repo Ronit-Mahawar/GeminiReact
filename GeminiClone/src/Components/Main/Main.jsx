@@ -78,7 +78,11 @@ const Main = () => {
 
           <div className="main-bottom">
             <div className="search-box">
-              <input type="text"  placeholder='Enter a prompt' value={input} onChange={(event)=>{setInput(event.target.value)}} />
+              <input type="text"  placeholder='Enter a prompt' value={input} onChange={(event)=>{setInput(event.target.value)}} onKeyDown={(event) => {
+    if (event.key === "Enter") {
+      AskQuestion(input);
+    }
+  }}/>
               
               <div>
                 <img src={assets.gallery_icon}  alt="" />
