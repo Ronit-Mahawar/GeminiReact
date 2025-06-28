@@ -31,7 +31,7 @@ const Sidebar = () => {
                     <img src={assets.message_icon} alt="" />
 
                     <p>{item}...</p>
-                    {console.log(item)}
+                   
                     </div>  
                     )
                 })}
